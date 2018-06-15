@@ -18,7 +18,7 @@ In this diagram we see the packet flow on an overlay network. Here are the steps
 
 - `c1` does a DNS lookup for `c2`. Since both containers are on the same overlay network the Docker Engine local DNS server resolves `c2` to its overlay IP address `10.0.0.3`.
 - An overlay network is a L2 segment so `c1` generates an L2 frame destined for the MAC address of `c2`.
-- The frame is encapsulated with a VXLAN header by the `overlay` network driver. The distributed overlay control plane manages the locations and state of each VXLAN tunnel endpoint so it knows that `c2` resides on `host-B` at the physical address of `192.168.0.3`. That address becomes the destination address of the underlay IP header.
+- The frame is encapsulated with a VXLAN header by the `overlay` network driver. The distributed overlay control plane manages the locations and state of each VXLAN tunnel endpoint so it knows that `c2` resides on `host-B` at the physical address of `192.168.1.3`. That address becomes the destination address of the underlay IP header.
 - Once encapsulated the packet is sent. The physical network is responsible of routing or bridging the VXLAN packet to the correct host.
 - The packet arrives at the `eth0` interface of `host-B` and is decapsulated by the `overlay` network driver. The original L2 frame from `c1` is passed to the `c2`'s `eth0` interface and up to the listening application.
 
@@ -27,9 +27,7 @@ In this diagram we see the packet flow on an overlay network. Here are the steps
 ### Overlay Driver Internal Architecture
 The Docker Swarm control plane automates all of the provisioning for an overlay network. No VXLAN configuration or Linux networking configuration is required. Data-plane encryption, an optional feature of overlays, is also automatically configured by the overlay driver as networks are created. The user or network operator only has to define the network (`docker network create -d overlay ...`) and attach containers to that network.
  
-<span class="float-right">
 ![Overlay Network Created by Docker Swarm](./img/overlayarch.png)
-</span>
 
 During overlay network creation, Docker Engine creates the network infrastructure required for overlays on each host. A Linux bridge is created per overlay along with its associated VXLAN interfaces. The Docker Engine intelligently instantiates overlay networks on hosts only when a container attached to that network is scheduled on the host. This prevents sprawl of overlay networks where connected containers do not exist.
 

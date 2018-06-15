@@ -27,7 +27,7 @@ DELETE | /message/ID | delete message with ID
 ```
 config/model.js:
 module.exports.models = {
-connections: 'sails-mongo',
+connection: 'mongo',
  migrate: 'safe'
 };
 ```
@@ -79,10 +79,10 @@ module.exports.connections = {
 ]
 ```
 * Modify a message
-  * ```curl -XPUT http://localhost:1337/message/5638b363c5cd0825511690bd?text=hey````
+  * ```curl -XPUT http://localhost:1337/message/5638b363c5cd0825511690bd?text=hey```
 
 * Delete a message
-  * ```curl -XDELETE http://localhost:1337/message/5638b381c5cd0825511690be````
+  * ```curl -XDELETE http://localhost:1337/message/5638b381c5cd0825511690be```
 
 * Get list of messages
   * ```curl http://localhost:1337/message```

@@ -4,12 +4,12 @@ Great! So you have now looked at `docker run`, played with a Docker container an
 ### 2.1 Run a static website in a container
 >**Note:** Code for this section is in this repo in the [static-site directory](https://github.com/docker/labs/tree/master/beginner/static-site).
 
-Let's start by taking baby-steps. First, we'll use Docker to run a static website in a container. The website is based on an existing image. We'll pull a Docker image from Docker Hub, run the container, and see how easy it is to set up a web server.
+Let's start by taking baby-steps. First, we'll use Docker to run a static website in a container. The website is based on an existing image. We'll pull a Docker image from Docker Store, run the container, and see how easy it is to set up a web server.
 
-The image that you are going to use is a single-page website that was already created for this demo and is available on the Docker Hub as [`seqvence/static-site`](https://hub.docker.com/r/seqvence/static-site/). You can download and run the image directly in one go using `docker run` as follows.
+The image that you are going to use is a single-page website that was already created for this demo and is available on the Docker Store as [`dockersamples/static-site`](https://store.docker.com/community/images/dockersamples/static-site). You can download and run the image directly in one go using `docker run` as follows.
 
-```
-$ docker run -d seqvence/static-site
+```bash
+$ docker run -d dockersamples/static-site
 ```
 
 >**Note:** The current version of this image doesn't run without the `-d` flag. The `-d` flag enables **detached mode**, which detaches the running container from the terminal/shell and returns your prompt after the container starts. We are debugging the problem with this image but for now, use `-d` even for this first example.
@@ -28,14 +28,15 @@ First, stop the container that you have just launched. In order to do this, we n
 
 Since we ran the container in detached mode, we don't have to launch another terminal to do this. Run `docker ps` to view the running containers.
 
-```
+```bash
 $ docker ps
 CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS               NAMES
-a7a0e504ca3e        seqvence/static-site   "/bin/sh -c 'cd /usr/"   28 seconds ago      Up 26 seconds       80/tcp, 443/tcp     stupefied_mahavira
+a7a0e504ca3e        dockersamples/static-site   "/bin/sh -c 'cd /usr/"   28 seconds ago      Up 26 seconds       80/tcp, 443/tcp     stupefied_mahavira
 ```
 
 Check out the `CONTAINER ID` column. You will need to use this `CONTAINER ID` value, a long sequence of characters, to identify the container you want to stop, and then to remove it. The example below provides the `CONTAINER ID` on our system; you should use the value that you see in your terminal.
-```
+
+```bash
 $ docker stop a7a0e504ca3e
 $ docker rm   a7a0e504ca3e
 ```
@@ -44,8 +45,8 @@ $ docker rm   a7a0e504ca3e
 
 Now, let's launch a container in **detached** mode as shown below:
 
-```
-$ docker run --name static-site -e AUTHOR="Your Name" -d -P seqvence/static-site
+```bash
+$ docker run --name static-site -e AUTHOR="Your Name" -d -P dockersamples/static-site
 e61d12292d69556eabe2a44c16cbd54486b2527e2ce4f95438e504afb7b02810
 ```
 
@@ -59,7 +60,7 @@ In the above command:
 
 Now you can see the ports by running the `docker port` command.
 
-```
+```bash
 $ docker port static-site
 443/tcp -> 0.0.0.0:32772
 80/tcp -> 0.0.0.0:32773
@@ -69,7 +70,7 @@ If you are running [Docker for Mac](https://docs.docker.com/docker-for-mac/), [D
 
 If you are using Docker Machine on Mac or Windows, you can find the hostname on the command line using `docker-machine` as follows (assuming you are using the `default` machine).
 
-```
+```bash
 $ docker-machine ip default
 192.168.99.100
 ```
@@ -77,9 +78,10 @@ You can now open `http://<YOUR_IPADDRESS>:[YOUR_PORT_FOR 80/tcp]` to see your si
 
 You can also run a second webserver at the same time, specifying a custom host port mapping to the container's webserver.
 
+```bash
+$ docker run --name static-site-2 -e AUTHOR="Your Name" -d -p 8888:80 dockersamples/static-site
 ```
-$ docker run --name static-site-2 -e AUTHOR="Your Name" -d -p 8888:80 seqvence/static-site
-```
+
 <img src="../images/static.png" title="static">
 
 To deploy this on a real server you would just need to install Docker, and run the above `docker` command(as in this case you can see the `AUTHOR` is Docker which we passed as an environment variable).
@@ -88,33 +90,34 @@ Now that you've seen how to run a webserver inside a Docker container, how do yo
 
 But first, let's stop and remove the containers since you won't be using them anymore.
 
-```
+```bash
 $ docker stop static-site
 $ docker rm static-site
 ```
 
 Let's use a shortcut to remove the second site:
 
-```
-$ docker rm -f static-site static-site-2
+```bash
+$ docker rm -f static-site-2
 ```
 
 Run `docker ps` to make sure the containers are gone.
-```
+
+```bash
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
 ### 2.2 Docker Images
 
-In this section, let's dive deeper into what Docker images are. You will build your own image, use that image to run an application locally, and finally, push some of your own images to Docker Hub.
+In this section, let's dive deeper into what Docker images are. You will build your own image, use that image to run an application locally, and finally, push some of your own images to Docker Cloud.
 
-Docker images are the basis of containers. In the previous example, you **pulled** the *seqvence/static-site* image from the registry and asked the Docker client to run a container **based** on that image. To see the list of images that are available locally on your system, run the `docker images` command.
+Docker images are the basis of containers. In the previous example, you **pulled** the *dockersamples/static-site* image from the registry and asked the Docker client to run a container **based** on that image. To see the list of images that are available locally on your system, run the `docker images` command.
 
-```
+```bash
 $ docker images
 REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE
-seqvence/static-site   latest              92a386b6e686        2 hours ago        190.5 MB
+dockersamples/static-site   latest              92a386b6e686        2 hours ago        190.5 MB
 nginx                  latest              af4b3d7d5401        3 hours ago        190.5 MB
 python                 2.7                 1c32174fd534        14 hours ago        676.8 MB
 postgres               9.4                 88d845ac7a88        14 hours ago        263.6 MB
@@ -132,7 +135,7 @@ For simplicity, you can think of an image akin to a git repository - images can 
 
 For example you could pull a specific version of `ubuntu` image as follows:
 
-```
+```bash
 $ docker pull ubuntu:12.04
 ```
 
@@ -140,11 +143,11 @@ If you do not specify the version number of the image then, as mentioned, the Do
 
 So for example, the `docker pull` command given below will pull an image named `ubuntu:latest`:
 
-```
+```bash
 $ docker pull ubuntu
 ```
 
-To get a new Docker image you can either get it from a registry (such as the Docker Hub) or create your own. There are hundreds of thousands of images available on [Docker hub](https://hub.docker.com). You can also search for images directly from the command line using `docker search`.
+To get a new Docker image you can either get it from a registry (such as the Docker Store) or create your own. There are hundreds of thousands of images available on [Docker Store](https://store.docker.com). You can also search for images directly from the command line using `docker search`.
 
 An important distinction with regard to images is between _base images_ and _child images_.
 
@@ -156,9 +159,10 @@ Another key concept is the idea of _official images_ and _user images_. (Both of
 
 - **Official images** are Docker sanctioned images. Docker, Inc. sponsors a dedicated team that is responsible for reviewing and publishing all Official Repositories content. This team works in collaboration with upstream software maintainers, security experts, and the broader Docker community. These are not prefixed by an organization or user name. In the list of images above, the `python`, `node`, `alpine` and `nginx` images are official (base) images. To find out more about them, check out the [Official Images Documentation](https://docs.docker.com/docker-hub/official_repos/).
 
-- **User images** are images created and shared by users like you. They build on base images and add additional functionality. Typically these are formatted as `user/image-name`. The `user` value in the image name is your Docker Hub user or organization name.
+- **User images** are images created and shared by users like you. They build on base images and add additional functionality. Typically these are formatted as `user/image-name`. The `user` value in the image name is your Docker Store user or organization name.
 
 ### 2.3 Create your first image
+
 >**Note:** The code for this section is in this repository in the [flask-app](https://github.com/docker/labs/tree/master/beginner/flask-app) directory.
 
 Now that you have a better understanding of images, it's time to create your own. Our goal here is to create an image that sandboxes a small [Flask](http://flask.pocoo.org) application.
@@ -187,9 +191,10 @@ Start by creating a directory called ```flask-app``` where we'll create the foll
 Make sure to ```cd flask-app``` before you start creating the files, because you don't want to start adding a whole bunch of other random files to your image.
 
 #### app.py
+
 Create the **app.py** with the following content:
 
-```
+```python
 from flask import Flask, render_template
 import random
 
@@ -219,16 +224,20 @@ def index():
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
 ```
+
 #### requirements.txt
+
 In order to install the Python modules required for our app, we need to create a file called **requirements.txt** and add the following line to that file:
 
 ```
 Flask==0.10.1
 ```
+
 #### templates/index.html
+
 Create a directory called `templates` and create an **index.html** file in that directory with the following content in it:
 
-```
+```html
 <html>
   <head>
     <style type="text/css">
@@ -257,10 +266,12 @@ Create a directory called `templates` and create an **index.html** file in that 
   </body>
 </html>
 ```
-### 2.3.2 Write a Dockerfile
-We want to create a Docker image with this web app. As mentioned above, all user images are based on a _base image_. Since our application is written in Python, we will build our own Python image based on [Alpine](https://hub.docker.com/_/alpine/). We'll do that using a **Dockerfile**.
 
-A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text file that contains a list of commands that the Docker daemon calls while creating an image. The Dockerfile contains all the information that Docker needs to know to run the app &#8212; a base Docker image to run from, location of your project code, any dependencies it has, and what commands to run at start-up. It is simple way to automate the image creation process. The best part is that the [commands](https://docs.docker.com/engine/reference/builder/) you write in a Dockerfile are *almost* identical to their equivalent Linux commands. This means you don't really have to learn new syntax to create your own Dockerfiles.
+### 2.3.2 Write a Dockerfile
+
+We want to create a Docker image with this web app. As mentioned above, all user images are based on a _base image_. Since our application is written in Python, we will build our own Python image based on [Alpine](https://store.docker.com/images/alpine). We'll do that using a **Dockerfile**.
+
+A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text file that contains a list of commands that the Docker daemon calls while creating an image. The Dockerfile contains all the information that Docker needs to know to run the app &#8212; a base Docker image to run from, location of your project code, any dependencies it has, and what commands to run at start-up. It is a simple way to automate the image creation process. The best part is that the [commands](https://docs.docker.com/engine/reference/builder/) you write in a Dockerfile are *almost* identical to their equivalent Linux commands. This means you don't really have to learn new syntax to create your own Dockerfiles.
 
 
 1. Create a file called **Dockerfile**, and add content to it as described below.
@@ -272,6 +283,7 @@ A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text file
   ```
 
 2. The next step usually is to write the commands of copying the files and installing the dependencies. But first we will install the Python pip package to the alpine linux distribution. This will not just install the pip package but any other dependencies too, which includes the python interpreter. Add the following [RUN](https://docs.docker.com/engine/reference/builder/#run) command next:
+
   ```
   RUN apk add --update py2-pip
   ```
@@ -293,6 +305,7 @@ A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text file
   ```
 
 4. Specify the port number which needs to be exposed. Since our flask app is running on `5000` that's what we'll expose.
+
   ```
   EXPOSE 5000
   ```
@@ -335,7 +348,7 @@ A [Dockerfile](https://docs.docker.com/engine/reference/builder/) is a text file
 
 Now that you have your `Dockerfile`, you can build your image. The `docker build` command does the heavy-lifting of creating a docker image from a `Dockerfile`.
 
-When you run the `docker build` command given below, make sure to replace `<YOUR_USERNAME>` with your username. This username should be the same one you created when registering on [Docker hub](https://hub.docker.com). If you haven't done that yet, please go ahead and create an account.
+When you run the `docker build` command given below, make sure to replace `<YOUR_USERNAME>` with your username. This username should be the same one you created when registering on [Docker Cloud](https://cloud.docker.com). If you haven't done that yet, please go ahead and create an account.
 
 The `docker build` command is quite simple - it takes an optional tag name with the `-t` flag, and the location of the directory containing the `Dockerfile` - the `.` indicates the current directory:
 
@@ -410,7 +423,7 @@ If you don't have the `alpine:3.5` image, the client will first pull the image a
 ### 2.3.4 Run your image
 The next step in this section is to run the image and see if it actually works.
 
-```
+```bash
 $ docker run -p 8888:5000 --name myfirstapp YOUR_USERNAME/myfirstapp
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ```
@@ -422,23 +435,34 @@ Head over to `http://localhost:8888` and your app should be live. **Note** If yo
 Hit the Refresh button in the web browser to see a few more cat images.
 
 ### 2.3.4 Push your image
-Now that you've created and tested your image, you can push it to [Docker Hub](https://hub.docker.com). All you have to do is:
+Now that you've created and tested your image, you can push it to [Docker Cloud](https://cloud.docker.com).
 
+First you have to login to your Docker Cloud account, to do that:
+
+```bash
+docker login
 ```
+
+Enter `YOUR_USERNAME` and `password` when prompted. 
+
+Now all you have to do is:
+
+```bash
 docker push YOUR_USERNAME/myfirstapp
 ```
+
 Now that you are done with this container, stop and remove it since you won't be using it again.
 
 Open another terminal window and execute the following commands:
 
-```
+```bash
 $ docker stop myfirstapp
 $ docker rm myfirstapp
 ```
 
 or
 
-```
+```bash
 $ docker rm -f myfirstapp
 ```
 
@@ -446,13 +470,14 @@ $ docker rm -f myfirstapp
 
 Here's a quick summary of the few basic commands we used in our Dockerfile.
 
-* `FROM` starts the Dockerfile. It is a requirement that the Dockerfile must start with the `FROM` command. Images are created in layers, which means you can use another image as the base image for your own. The `FROM` command defines your base layer. As arguments, it takes the name of the image. Optionally, you can add the Docker Hub username of the maintainer and image version, in the format `username/imagename:version`.
+* `FROM` starts the Dockerfile. It is a requirement that the Dockerfile must start with the `FROM` command. Images are created in layers, which means you can use another image as the base image for your own. The `FROM` command defines your base layer. As arguments, it takes the name of the image. Optionally, you can add the Docker Cloud username of the maintainer and image version, in the format `username/imagename:version`.
 
 * `RUN` is used to build up the Image you're creating. For each `RUN` command, Docker will run the command then create a new layer of the image. This way you can roll back your image to previous states easily. The syntax for a `RUN` instruction is to place the full text of the shell command after the `RUN` (e.g., `RUN mkdir /user/local/foo`). This will automatically run in a `/bin/sh` shell. You can define a different shell like this: `RUN /bin/bash -c 'mkdir /user/local/foo'`
 
 * `COPY` copies local files into the container.
 
 * `CMD` defines the commands that will run on the Image at start-up. Unlike a `RUN`, this does not create a new layer for the Image, but simply runs the command. There can only be one `CMD` per a Dockerfile/Image. If you need to run multiple commands, the best way to do that is to have the `CMD` run a script. `CMD` requires that you tell it where to run the command, unlike `RUN`. So example `CMD` commands would be:
+
 ```
   CMD ["python", "./app.py"]
 
@@ -465,9 +490,9 @@ Here's a quick summary of the few basic commands we used in our Dockerfile.
 >**Note:** The `EXPOSE` command does not actually make any ports accessible to the host! Instead, this requires 
 publishing ports by means of the `-p` flag when using `$ docker run`.  
 
-* `PUSH` pushes your image to Docker Hub, or alternately to a [private registry](TODO: add URL)
+* `PUSH` pushes your image to Docker Cloud, or alternately to a [private registry](https://docs.docker.com/registry/)
 
 >**Note:** If you want to learn more about Dockerfiles, check out [Best practices for writing Dockerfiles](https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/).
 
 ## Next Steps
-For the next step in the tutorial head over to [3.0 Run a multi-container app with Docker Compose](./votingapp.md)
+For the next step in the tutorial head over to [3.0 Deploying an app to a Swarm](./votingapp.md)

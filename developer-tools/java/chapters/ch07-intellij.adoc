@@ -1,3 +1,5 @@
+:toc:
+
 :imagesdir: images
 
 [[Docker_IntelliJ]]
@@ -8,8 +10,6 @@ This chapter will show you basic Docker tooling with IntelliJ IDEA:
 - Pull Docker images
 - Run, stop, delete a Container
 - Build an Image
-
-NOTE: IntelliJ only supports configuring Docker Engine running using Docker Toolbox. This means that if you are running Docker for Mac or Docker for Windows then IntelliJ cannot be used.
 
 === Install Docker Plugin in IDEA
 

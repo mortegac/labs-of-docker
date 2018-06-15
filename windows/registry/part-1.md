@@ -1,6 +1,6 @@
 # Part 1 - Building the Registry Image
 
-Docker provides an [official registry image](https://hub.docker.com/_/registry/) on the Hub, but currently it is only available as a Linux image. The application is written in Go so it can be compiled for Windows and run as a container on Windows 10 and Windows Server 2016.
+Docker provides an [official registry image](https://store.docker.com/images/registry) on the Hub, but currently it is only available as a Linux image. The application is written in Go so it can be compiled for Windows and run as a container on Windows 10 and Windows Server 2016.
 
 > Note. Expect the official image to have a Windows variant soon, but this part of the lab is still useful if you want to build from the latest source code yourself.
 
@@ -22,18 +22,16 @@ The Dockerfile for the registry builder is in [Dockerfile.builder](Dockerfile.bu
 
 ```Dockerfile
 # escape=`
-FROM sixeyed/golang:windowsservercore 
+FROM golang:windowsservercore
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 ```
 
-The base image is [sixeyed/golang](https://hub.docker.com/r/sixeyed/golang/) which is on the Docker Hub, built from [this Dockerfile](https://github.com/sixeyed/dockers-windows/blob/master/golang/Dockerfile). It has the Go toolset installed, but rather than using a released version, it builds Go from the source on GitHub to get the latest features.
-
-> Note. There is an [official Go image](https://hub.docker.com/_/golang/) on Docker Hub, which has Windows Server Core and Nano Server variants. That uses the latest release of Go - 1.7 - which has [an issue](https://github.com/golang/go/issues/15978) that stops you using Docker volumes on Windows. It's fixed in the latest source code, which is why we use an image that builds from source, but when Go 1.8 is released we can switch to using the official image as the base for the builder.
+The base image is the [official Go image](https://store.docker.com/images/golang) which is in the Docker Store.
 
 There's a single `CMD` instruction to build the latest version of the registry and copy the built files to a known output location:
 
 ```Dockerfile
-CMD .\go get github.com/docker/distribution/cmd/registry ; `    
+CMD go get github.com/docker/distribution/cmd/registry ; `
     cp \"$env:GOPATH\bin\registry.exe\" c:\out\ ; `
     cp \"$env:GOPATH\src\github.com\docker\distribution\cmd\registry\config-example.yml\" c:\out\config.yml
 ```
@@ -42,9 +40,9 @@ When we run a container from the builder image, it will compile the latest regis
 
 ## Building the Registry Server
 
-First we build the builder image - all the images in this lab use [microsoft/windowsservercore](https://hub.docker.com/r/microsoft/windowsservercore/) or [microsoft/nanoserver](https://hub.docker.com/r/microsoft/nanoserver/) as the base images, so you can only use a Windows host to build and run them. From a PowerShell session, navigate to the lab folder and build the builder:
+First we build the builder image - all the images in this lab use [microsoft/windowsservercore](https://store.docker.com/images/windowsservercore) or [microsoft/nanoserver](https://store.docker.com/images/nanoserver) as the base images, so you can only use a Windows host to build and run them. From a PowerShell session, navigate to the lab folder and build the builder:
 
-```PowerShell 
+```PowerShell
 docker build -t registry-builder -f Dockerfile.builder .
 ```
 

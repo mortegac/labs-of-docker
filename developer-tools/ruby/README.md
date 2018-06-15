@@ -8,13 +8,13 @@ Ruby on Rails is a popular web application framework. Implementng RoR in contain
 
 There are many different versions of Ruby in use. Ruby applications can be based on 1.8, 1.9, 2.0 and all intermediary versions up to the latest release. This includes "upstream" Ruby but also REE (an "Enterprise Edition" set of patches, for older versions of Ruby), and a number of "Ruby on X" ports: JRuby (on top of the JVM), IronRuby (on top of .NET), Maglev, Rubinius, RubyMotion, and more. 
 
-In contrast, there are also many many versions of Python in use, but the majority of applications use the lastest 2.X or 3.X versions. Simialrly, Java applications use the last two major releases of either Java released by Oracle or OpenJDK. 
+In contrast, there are also many many versions of Python in use, but the majority of applications use the lastest 2.X or 3.X versions. Similarly, Java applications use the last two major releases of either Java released by Oracle or OpenJDK. 
 
 Earlier versions of Ruby are used in production because upgrading presents challenges such as, critical gems are not backward-compatible. Debugging tools like pry, rubocop, byebug... do work on many versions, but not consistently on all Ruby verisons.
 
 As a result, Ruby developers (and people deploying Ruby apps) rely on tools like [rvm](https://rvm.io/) or [rbenv](https://github.com/rbenv/rbenv) to install a specific version of Ruby. These tools enable developers to switch between different versions of Ruby, and between different sets of gems (when different applications have conflicting requirements).
 
-Ruby programmers expect to be able to request a specific version of Ruby on demand. This is not currently available on Docker Hub and developers will have to create Dockerfiles that are specific to development environment requirements. Docker Hub currently has Ruby 2.1, 2.2, 2.3; which means the images on Docker Hub can support newer applications.  However, migrating older applications to a container may require custom builds to meet Ruby version requirements.
+Ruby programmers expect to be able to request a specific version of Ruby on demand. This is not currently available on Docker Store and developers will have to create Dockerfiles that are specific to development environment requirements. Docker Store currently has Ruby 2.1, 2.2, 2.3; which means the images on Docker Store can support newer applications.  However, migrating older applications to a container may require custom builds to meet Ruby version requirements.
 
 
 #### Use RVM to manage Ruby Versions
@@ -204,7 +204,7 @@ As indicated above, many things (including asset pre-compilation) require databa
 
 Here are additional sources to checkout. 
 
-* [Ruby on Docker Hub](https://hub.docker.com/_/ruby/)
+* [Ruby on Docker Store](https://store.docker.com/images/ruby)
 * [Compose and Rails Quickstart](https://docs.docker.com/compose/rails/)
 * [Rails & Assets with Docker](http://red-badger.com/blog/2016/06/22/docker-and-assets-and-rails-oh-my/)
 * [Docker on Rails Demo](https://github.com/cpuguy83/docker-rails-dev-demo)
